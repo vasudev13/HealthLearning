@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Model Checkpoints (To Large to be pushed)
+*.ckpt
