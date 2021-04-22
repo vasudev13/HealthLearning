@@ -4,7 +4,11 @@
 #SBATCH --account=csci_ga_2565_0001
 #SBATCH --partition=n1s8-t4-1
 #SBATCH --gres=gpu:1
+#SBATCH --time=00:10:00
 #SBATCH --requeue
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=vasudev.w13@gmail.com
+
 
 module purge
 
@@ -58,5 +62,6 @@ singularity exec --nv \
             /share/apps/images/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif \
 	    /bin/bash -c "
 source /ext3/env.sh
+conda activate dev
 jupyter lab --no-browser --port $port 
 "
