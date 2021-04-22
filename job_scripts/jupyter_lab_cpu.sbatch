@@ -4,6 +4,8 @@
 #SBATCH --account=csci_ga_2565_0001
 #SBATCH --partition=interactive
 #SBATCH --requeue
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=vasudev.w13@gmail.com
 
 module purge
 
