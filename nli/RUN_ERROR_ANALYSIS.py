@@ -17,7 +17,7 @@ parser.add_argument('--model-checkpoint', default='./checkpoint/', type=Path,
                     metavar='DIR', help='path to model checkpoint')
 
 args = parser.parse_args()
-
+# print(args.model_checkpoint), should be similar to something like Path('/checkpoints/biobert_v1-epoch=00-val_loss=0.55.ckpt')
 trained_model = NLIFineTuningModel.load_from_checkpoint(checkpoint_path=args.model_checkpoint,  # model checkpoint path
                                                         num_labels=CONFIG['NUM_CLASSES'],
                                                         model_name_or_path=CONFIG['MODEL_NAME_OR_PATH'])

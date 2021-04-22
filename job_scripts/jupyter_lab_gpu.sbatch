@@ -4,7 +4,6 @@
 #SBATCH --account=csci_ga_2565_0001
 #SBATCH --partition=n1s8-t4-1
 #SBATCH --gres=gpu:1
-#SBATCH --time=04:00:00
 #SBATCH --requeue
 
 module purge
