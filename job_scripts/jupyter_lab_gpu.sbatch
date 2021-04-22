@@ -62,6 +62,5 @@ singularity exec --nv \
             /share/apps/images/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif \
 	    /bin/bash -c "
 source /ext3/env.sh
-conda activate dev
 jupyter lab --no-browser --port $port 
 "

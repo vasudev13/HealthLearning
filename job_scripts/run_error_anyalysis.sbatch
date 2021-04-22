@@ -1,4 +1,4 @@
-#!/bin/batch
+#!/bin/bash
 
 #SBATCH --job-name=error_samples
 #SBATCH --mail-type=ALL
