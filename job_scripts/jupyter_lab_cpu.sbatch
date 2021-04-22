@@ -2,6 +2,7 @@
 
 #SBATCH --job-name=jupyter
 #SBATCH --account=csci_ga_2565_0001
+#SBATCH --partition=interactive
 #SBATCH --requeue
 
 module purge
