@@ -1,10 +1,9 @@
-"""torchvision.transforms style augmentations but for text"""
+"""torchvision.transforms style augmentations for Clincal Text"""
 import torch
 import torch.nn.functional as F
-from googletrans import Translator
 
 
-__all__ = ["Compose", "BackTranslation"]
+__all__ = ["Compose", "ClinicalSynonymSubstitution"]
 
 
 class Compose:
@@ -28,23 +27,30 @@ class Compose:
         return format_string
 
 
-class BackTranslation(torch.nn.Module):
-    """Translates text into another language and back to souce language
-
-
-    When installing googletrans, please keep in mind:
-    `pip uninstall googletrans`
-    `pip install googletrans==3.1.0a0`
+class ClinicalSynonymSubstitution(torch.nn.Module):
+    """
+        Substitutes clincal term with synonymous concepts from Universal Medical Language System
+        For now using only `en_core_sci_sm` as UMLS is huge and memory requirements can get out of hand.
     """
 
-    def __init__(self, source_lang: str, dest_lang: str, p: float = 0.5):
-        self.source_lang = source_lang
-        self.dest_lang = dest_lang
-        self.translator = Translator()
+    def __init__(self, p: float = 0.5, substitution_probability: float = 0.7, scispacy_entity_model="en_core_sci_sm"):
+        super().__init__()
+        self.nlp = spacy.load(scispacy_entity_model)
+        self.nlp.add_pipe("scispacy_linker", config={
+                          "resolve_abbreviations": True, "linker_name": "umls"})
         self.p = p
+        self.substitution_probability = substitution_probability
+        self.linker = nlp.get_pipe("scispacy_linker")
 
-    def forward(self, text):
+    def forward(self, text: str) -> str:
+        augmented_text = str(text)
         if torch.rand(1).item() < self.p:
-            text = self.translator.translate(text, dest=self.dest_lang).text
-            text = self.translator.translate(text, dest=self.source_lang).text
-        return text
+            doc = self.nlp(text)
+            for entity in doc.ents:
+                if torch.rand(1).item() < self.substitution_probability:
+                    for umls_entity in entity._.kb_ents[:1]:
+                        aliases = linker.kb.cui_to_entity[umls_entity[0]].aliases
+                        alias = random.sample(aliases, 1)[0]
+                        augmented_text = augmented_text.replace(
+                            entity.text, alias)
+        return augmented_text
