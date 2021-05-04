@@ -21,7 +21,7 @@ class NLIDataset(torch.utils.data.Dataset):
             max_len (int): Maximum permissible length of text to be considered.
             tokenizer (transformers.AutoTokenizer): Tokenizer object to encode text input
             sentence1 (List[str]): List of `sentence 1`
-            sentence2 (List[str]): List of `sentence 1`
+            sentence2 (List[str]): List of `sentence 2`
             labels (List[str]): List of `labels` specifying relation between the two sentences: 0:'entailment',1:'contradiction',2:'neutral'
             transforms (torch.nn.Module): Text Level data augmentations
 
@@ -40,8 +40,12 @@ class NLIDataset(torch.utils.data.Dataset):
         return len(self.sentence1)
 
     def __getitem__(self, idx: int):
-        sentence_1 = self.sentence1[idx] if self.transforms is None else self.transforms(self.sentence1[idx])
-        sentence_2 = self.sentence2[idx] if self.transforms is None else self.transforms(self.sentence2[idx])
+        if self.transforms:
+            sentence_1=self.transforms(self.sentence1[idx])
+            sentence_2=self.transforms(self.sentence2[idx])
+        else:
+            sentence_1 = self.sentence1[idx] 
+            sentence_2 = self.sentence2[idx] 
         encoded_input = self.tokenizer.encode_plus(
             text=sentence_1,
             text_pair=sentence_2,
@@ -66,9 +70,11 @@ class NLIDataModule(pl.LightningDataModule):
     """Lightning Data Module for Natural Language Inference task
     """
 
-    def __init__(self, get_split_def):
+    def __init__(self, get_split_def,train_transforms=None,val_transforms=None):
         super().__init__()
         self.get_split_def = get_split_def
+        self.train_transforms=train_transforms
+        self.val_transforms=val_transforms
 
     def prepare_data(self):
         if CONFIG['UNZIP']:
@@ -86,16 +92,18 @@ class NLIDataModule(pl.LightningDataModule):
         if stage == 'test':
             self.test_df = self.get_split_def('test')
 
-    def get_dataset(self, df):
+    def get_dataset(self, df,transforms):
         dataset = NLIDataset(max_len=CONFIG['MAX_LEN'],
                              tokenizer=self.tokenizer,
                              sentence1=df[CONFIG['sentence1']].values,
                              sentence2=df[CONFIG['sentence2']].values,
-                             labels=df[CONFIG['labels']].values)
+                             labels=df[CONFIG['labels']].values,
+                             transforms=transforms
+                            )
         return dataset
 
     def train_dataloader(self):
-        train_dataset = self.get_dataset(self.train_df)
+        train_dataset = self.get_dataset(self.train_df,self.train_transforms)
         train_dataloader = torch.utils.data.DataLoader(train_dataset,
                                                        batch_size=CONFIG['TRAIN_BS'],
                                                        shuffle=True,
@@ -104,7 +112,7 @@ class NLIDataModule(pl.LightningDataModule):
         return train_dataloader
 
     def val_dataloader(self):
-        val_dataset = self.get_dataset(self.val_df)
+        val_dataset = self.get_dataset(self.val_df,self.val_transforms)
         val_dataloader = torch.utils.data.DataLoader(val_dataset,
                                                      batch_size=CONFIG['VAL_BS'],
                                                      shuffle=False,
