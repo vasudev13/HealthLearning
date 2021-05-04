@@ -37,3 +37,15 @@ jupyter notebook --no-browser --port $port --notebook-dir=$(pwd)
 ssh -L <port>:localhost:<port> <net_id>@greene
 
 ```
+
+---
+
+### Perturbation Effects
+
+1. Clinical Synonym Replacement
+
+**1.1 MedNLI**
+
+| Model        | Reproduced Accuracy | Pertubation Trained Accuracy  | Adversarial Accuracy |
+| ------------- |:-------------:| -----:|-----:|
+| [Clinical BERT](https://arxiv.org/pdf/1904.03323.pdf) | 79.11 | 80.10 | 73.70 |
