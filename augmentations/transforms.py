@@ -1,6 +1,8 @@
 """torchvision.transforms style augmentations for Clincal Text"""
 import torch
 import torch.nn.functional as F
+import spacy
+from scispacy.linking import EntityLinker
 
 
 __all__ = ["Compose", "ClinicalSynonymSubstitution"]
@@ -53,4 +55,4 @@ class ClinicalSynonymSubstitution(torch.nn.Module):
                         alias = random.sample(aliases, 1)[0]
                         augmented_text = augmented_text.replace(
                             entity.text, alias)
-        return augmented_text
+        return augmented_text+" Bye"

@@ -43,8 +43,7 @@ class NLIFineTuningModel(pl.LightningModule):
         metrics = torchmetrics.MetricCollection([
             torchmetrics.Accuracy(),
             torchmetrics.F1(num_classes=3, average='macro')
-        ]
-        )
+        ])
         self.train_metrics = metrics.clone()
         self.val_metrics = metrics.clone()
 

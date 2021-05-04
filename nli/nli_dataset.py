@@ -14,7 +14,7 @@ class NLIDataset(torch.utils.data.Dataset):
     """Natural Language Inferece: Given a pair of sentence, predict the relation between them among 3 possible outcomes: Entailment, Contradiction, Neutral
     """
 
-    def __init__(self, max_len: int, tokenizer: transformers.AutoTokenizer, sentence1: List[str], sentence2: List[str], labels: List[str]) -> torch.utils.data.Dataset:
+    def __init__(self, max_len: int, tokenizer: transformers.AutoTokenizer, sentence1: List[str], sentence2: List[str], labels: List[str],transforms:torch.nn.Module=None) -> torch.utils.data.Dataset:
         """Dataset class for Natural Language Inference task
 
         Args:
@@ -23,6 +23,7 @@ class NLIDataset(torch.utils.data.Dataset):
             sentence1 (List[str]): List of `sentence 1`
             sentence2 (List[str]): List of `sentence 1`
             labels (List[str]): List of `labels` specifying relation between the two sentences: 0:'entailment',1:'contradiction',2:'neutral'
+            transforms (torch.nn.Module): Text Level data augmentations
 
         Returns:
             torch.utils.data.Dataset: Instance of NLIDataset
@@ -33,13 +34,14 @@ class NLIDataset(torch.utils.data.Dataset):
         self.sentence1 = sentence1
         self.sentence2 = sentence2
         self.labels = labels
+        self.transforms=transforms
 
     def __len__(self):
         return len(self.sentence1)
 
     def __getitem__(self, idx: int):
-        sentence_1 = self.sentence1[idx]
-        sentence_2 = self.sentence2[idx]
+        sentence_1 = self.sentence1[idx] if self.transforms is None else self.transforms(self.sentence1[idx])
+        sentence_2 = self.sentence2[idx] if self.transforms is None else self.transforms(self.sentence2[idx])
         encoded_input = self.tokenizer.encode_plus(
             text=sentence_1,
             text_pair=sentence_2,
