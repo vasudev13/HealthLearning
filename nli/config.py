@@ -3,7 +3,7 @@ CONFIG = {
     'ZIP_PATH': './mednli-a-natural-language-inference-dataset-for-the-clinical-domain-1.0.0.zip',
     'UNZIP': False,
     # PATH TO UNZIP DATASET
-    'DATA_PATH': '../../downstream_datasets/mednli-a-natural-language-inference-dataset-for-the-clinical-domain-1.0.0/',
+    'DATA_PATH': '../../datasets/mednli/1.0.0/',
     'sentence1': 'sentence1',
     'sentence2': 'sentence2',
     'labels': 'gold_label',

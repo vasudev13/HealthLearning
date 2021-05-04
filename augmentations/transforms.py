@@ -3,6 +3,7 @@ import torch
 import torch.nn.functional as F
 import spacy
 from scispacy.linking import EntityLinker
+import random
 
 
 __all__ = ["Compose", "ClinicalSynonymSubstitution"]
@@ -42,7 +43,7 @@ class ClinicalSynonymSubstitution(torch.nn.Module):
                           "resolve_abbreviations": True, "linker_name": "umls"})
         self.p = p
         self.substitution_probability = substitution_probability
-        self.linker = nlp.get_pipe("scispacy_linker")
+        self.linker = self.nlp.get_pipe("scispacy_linker")
 
     def forward(self, text: str) -> str:
         augmented_text = str(text)
@@ -51,8 +52,8 @@ class ClinicalSynonymSubstitution(torch.nn.Module):
             for entity in doc.ents:
                 if torch.rand(1).item() < self.substitution_probability:
                     for umls_entity in entity._.kb_ents[:1]:
-                        aliases = linker.kb.cui_to_entity[umls_entity[0]].aliases
+                        aliases = self.linker.kb.cui_to_entity[umls_entity[0]].aliases
                         alias = random.sample(aliases, 1)[0]
                         augmented_text = augmented_text.replace(
                             entity.text, alias)
-        return augmented_text+" Bye"
+        return augmented_text
