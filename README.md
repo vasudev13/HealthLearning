@@ -35,7 +35,6 @@ jupyter notebook --no-browser --port $port --notebook-dir=$(pwd)
 
 # On a separate terminal window
 ssh -L <port>:localhost:<port> <net_id>@greene
-
 ```
 
 ---
