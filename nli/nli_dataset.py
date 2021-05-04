@@ -104,7 +104,7 @@ class NLIDataModule(pl.LightningDataModule):
         return val_dataloader
 
     def test_dataloader(self):
-        test_dataset = self.get_dataset(self.test_df)
+        test_dataset = self.get_dataset(self.test_df,transforms=None)
         test_dataloader = torch.utils.data.DataLoader(test_dataset,
                                                       batch_size=CONFIG['VAL_BS'],
                                                       shuffle=False,
