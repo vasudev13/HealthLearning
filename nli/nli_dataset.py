@@ -5,66 +5,49 @@ import pytorch_lightning as pl
 import transformers
 
 import zipfile
-from typing import List
 
 from config import CONFIG
 
 
 class NLIDataset(torch.utils.data.Dataset):
-    """Natural Language Inferece: Given a pair of sentence, predict the relation between them among 3 possible outcomes: Entailment, Contradiction, Neutral
-    """
 
-    def __init__(self, max_len: int, tokenizer: transformers.AutoTokenizer, sentence1: List[str], sentence2: List[str], labels: List[str],transforms:torch.nn.Module=None) -> torch.utils.data.Dataset:
-        """Dataset class for Natural Language Inference task
+  def __init__(self,max_len:int,tokenizer,sentence1,sentence2,labels,transforms=None):
+    super().__init__()
+    self.max_len=max_len
+    self.tokenizer=tokenizer
+    self.sentence1=sentence1
+    self.sentence2=sentence2
+    self.labels=labels
+    self.transforms=transforms
+  
+  def __len__(self):
+    return len(self.sentence1)
 
-        Args:
-            max_len (int): Maximum permissible length of text to be considered.
-            tokenizer (transformers.AutoTokenizer): Tokenizer object to encode text input
-            sentence1 (List[str]): List of `sentence 1`
-            sentence2 (List[str]): List of `sentence 2`
-            labels (List[str]): List of `labels` specifying relation between the two sentences: 0:'entailment',1:'contradiction',2:'neutral'
-            transforms (torch.nn.Module): Text Level data augmentations
+  def __getitem__(self,idx):
+    if self.transforms:
+        sentence_1=self.transforms(self.sentence1[idx])
+        sentence_2=self.transforms(self.sentence2[idx])
+    else:
+        sentence_1=self.sentence1[idx]
+        sentence_2=self.sentence2[idx]
+    encoded_input=self.tokenizer.encode_plus(
+        text=sentence_1,
+        text_pair=sentence_2,
+        add_special_tokens=True,
+        padding='max_length',
+        truncation=True,
+        max_length=self.max_len,
+        return_token_type_ids=True,
+        return_attention_mask=True,
+        return_tensors='pt'
+    )
 
-        Returns:
-            torch.utils.data.Dataset: Instance of NLIDataset
-        """
-        super().__init__()
-        self.max_len = max_len
-        self.tokenizer = tokenizer
-        self.sentence1 = sentence1
-        self.sentence2 = sentence2
-        self.labels = labels
-        self.transforms=transforms
-
-    def __len__(self):
-        return len(self.sentence1)
-
-    def __getitem__(self, idx: int):
-        if self.transforms:
-            sentence_1=self.transforms(self.sentence1[idx])
-            sentence_2=self.transforms(self.sentence2[idx])
-        else:
-            sentence_1 = self.sentence1[idx] 
-            sentence_2 = self.sentence2[idx] 
-        encoded_input = self.tokenizer.encode_plus(
-            text=sentence_1,
-            text_pair=sentence_2,
-            add_special_tokens=True,
-            padding='max_length',
-            truncation=True,
-            max_length=self.max_len,
-            return_token_type_ids=True,
-            return_attention_mask=True,
-            return_tensors='pt'
-        )
-
-        return {
-            'labels': torch.Tensor(self.labels[idx]),
-            'input_ids': encoded_input['input_ids'].view(-1),
-            'attention_mask': encoded_input['attention_mask'].view(-1),
-            'token_type_ids': encoded_input['token_type_ids'].view(-1),
-        }
-
+    return {
+        'labels':torch.tensor(self.labels[idx]),
+        'input_ids':encoded_input['input_ids'].view(-1),
+        'attention_mask':encoded_input['attention_mask'].view(-1),
+        'token_type_ids':encoded_input['token_type_ids'].view(-1),
+    }
 
 class NLIDataModule(pl.LightningDataModule):
     """Lightning Data Module for Natural Language Inference task

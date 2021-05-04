@@ -53,7 +53,8 @@ class ClinicalSynonymSubstitution(torch.nn.Module):
                 if torch.rand(1).item() < self.substitution_probability:
                     for umls_entity in entity._.kb_ents[:1]:
                         aliases = self.linker.kb.cui_to_entity[umls_entity[0]].aliases
-                        alias = random.sample(aliases, 1)[0]
-                        augmented_text = augmented_text.replace(
-                            entity.text, alias)
+                        if aliases:
+                            alias = random.sample(aliases, 1)[0]
+                            augmented_text = augmented_text.replace(
+                                entity.text, alias)
         return augmented_text
