@@ -1,6 +1,6 @@
 # HealthLearning
 
-### Running Project on HPC
+## Running Project on HPC
 
 ```
 # Login to greene
@@ -40,9 +40,9 @@ ssh -L <port>:localhost:<port> <net_id>@greene
 
 ---
 
-### Perturbation Effects
+## Perturbation Effects
 
-1. Clinical Synonym Replacement
+### 1. Clinical Synonym Replacement
 
 **1.1 MedNLI**
 
