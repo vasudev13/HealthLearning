@@ -6,7 +6,7 @@
 #SBATCH --time=20:00:00
 #SBATCH --requeue
 
-singularity exec --nv --bind /scratch --bind /share/apps --overlay /share/apps/pytorch/1.8.1/pytorch-1.8.1.sqf:ro /share/apps/images/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash
+singularity exec --nv --bind /scratch --bind /share/apps --overlay /share/apps/pytorch/1.8.1/pytorch-1.8.1.sqf:ro /share/apps/images/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash -c "
 
 source /ext3/env.sh
 
@@ -24,6 +24,4 @@ python transformers/examples/pytorch/language-modeling/run_mlm.py \
     --fp16 \
     --dataloader_num_workers 8\
     --line_by_line 
-
-
-echo "LANGUAGE MODELLING FINISHED."
+"
