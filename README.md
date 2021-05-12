@@ -46,9 +46,9 @@ ssh -L <port>:localhost:<port> <net_id>@greene
 **1.1 MedNLI**
 
 | Model        |  Accuracy | 
-| ------------- |:-------------:| -----:|-----:|
+| ------------- |:-------------:|
 | [Clinical BERT](https://arxiv.org/pdf/1904.03323.pdf) | 79.11 |
-
 | [Clinical BERT](https://arxiv.org/pdf/1904.03323.pdf) + Clinical Synonym Replacement | 80.10 |
-
 | Discharge Summary ALBERT | 78.13 |
+
+
