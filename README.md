@@ -73,4 +73,15 @@ composite_transform=Compose(
 
 text="Patient has elevated BUN
 composite_transform(text)
+
+composite_transform=Compose(
+        [
+            SCI_LG_transform, # For linking 2.78M unique concepts from UMLS, but not accurate yet, synonym candidates are generated without taking context information into account.
+            BIONLP13CG_transform, # For cancer and genetics
+            BC5CDR_transform # For chemicals and diseases
+        ]
+)
+
+text="Patient has elevated BUN
+composite_transform(text)
 ```
