@@ -52,3 +52,20 @@ ssh -L <port>:localhost:<port> <net_id>@greene
 | Discharge Summary ALBERT | 78.13 |
 
 
+## Usage
+```
+SCI_LG_transform=ClinicalSynonymSubstitution(substitution_probability=0.3,p=0.3,scispacy_entity_model="en_ner_bionlp13cg_md") 
+BIONLP13CG_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,scispacy_entity_model="en_ner_bionlp13cg_md")
+BC5CDR_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,scispacy_entity_model="en_ner_bionlp13cg_md")
+
+composite_transform=Compose(
+        [
+            SCI_LG_transform,
+            BIONLP13CG_transform,
+            BC5CDR_transform
+        ]
+)
+
+text="Patient has elevated BUN
+composite_transform(text)
+```
