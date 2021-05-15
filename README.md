@@ -65,9 +65,9 @@ BC5CDR_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,
 
 composite_transform=Compose(
         [
-            SCI_LG_transform,
-            BIONLP13CG_transform,
-            BC5CDR_transform
+            SCI_LG_transform, # For linking 2.78M unique concepts from UMLS, but not accurate yet, synonym candidates are generated without taking context information into account.
+            BIONLP13CG_transform, # For cancer and genetics
+            BC5CDR_transform # For chemicals and diseases
         ]
 )
 
