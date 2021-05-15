@@ -1,6 +1,6 @@
 # HealthLearning
 
-## Running Project on HPC
+## Running Project on HPC with Jupyter Notebook
 
 ```
 # Login to greene
@@ -38,6 +38,11 @@ ssh -L <port>:localhost:<port> <net_id>@greene
 ```
 
 ---
+
+## Language Modelling
+```
+  sbatch albert_train.sbatch
+```
 
 ## Perturbation Effects
 
