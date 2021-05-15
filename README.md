@@ -59,6 +59,8 @@ ssh -L <port>:localhost:<port> <net_id>@greene
 
 ## Usage
 ```
+from transforms import ClinicalSynonymSubstitution,Compose
+
 SCI_LG_transform=ClinicalSynonymSubstitution(substitution_probability=0.3,p=0.3,scispacy_entity_model="en_ner_bionlp13cg_md") 
 BIONLP13CG_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,scispacy_entity_model="en_ner_bionlp13cg_md")
 BC5CDR_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,scispacy_entity_model="en_ner_bionlp13cg_md")
