@@ -44,19 +44,6 @@ ssh -L <port>:localhost:<port> <net_id>@greene
   sbatch albert_train.sbatch
 ```
 
-## Perturbation Effects
-
-### 1. Clinical Synonym Replacement
-
-**1.1 MedNLI**
-
-| Model        |  Accuracy | 
-| ------------- |:-------------:|
-| [Clinical BERT](https://arxiv.org/pdf/1904.03323.pdf) | 79.11 (Reproduced) |
-| [Clinical BERT](https://arxiv.org/pdf/1904.03323.pdf) + Clinical Synonym Replacement | 80.10 |
-| Discharge Summary ALBERT | 78.13 |
-
-
 ## Usage
 ```
 from transforms import ClinicalSynonymSubstitution,Compose
@@ -73,17 +60,15 @@ composite_transform=Compose(
         ]
 )
 
-text="Patient has elevated BUN
+text="Patient has elevated BUN"
 composite_transform(text)
+```
 
-composite_transform=Compose(
-        [
-            SCI_LG_transform, # For linking 2.78M unique concepts from UMLS, but not accurate yet, synonym candidates are generated without taking context information into account.
-            BIONLP13CG_transform, # For cancer and genetics
-            BC5CDR_transform # For chemicals and diseases
-        ]
-)
+## Model Weights
+```
+from transformers import AutoTokenizer, AutoModelForMaskedLM
+  
+tokenizer = AutoTokenizer.from_pretrained("Vasudev/discharge_albert")
 
-text="Patient has elevated BUN
-composite_transform(text)
+model = AutoModelForMaskedLM.from_pretrained("Vasudev/discharge_albert")
 ```
