@@ -48,9 +48,18 @@ ssh -L <port>:localhost:<port> <net_id>@greene
 ```
 from transforms import ClinicalSynonymSubstitution,Compose
 
-SCI_LG_transform=ClinicalSynonymSubstitution(substitution_probability=0.3,p=0.3,scispacy_entity_model="en_ner_bionlp13cg_md") 
+SCI_SM_transform=ClinicalSynonymSubstitution(substitution_probability=0.4,p=0.3,scispacy_entity_model="en_core_sci_sm")
 BIONLP13CG_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,scispacy_entity_model="en_ner_bionlp13cg_md")
-BC5CDR_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,scispacy_entity_model="en_ner_bionlp13cg_md")
+BC5CDR_transform=ClinicalSynonymSubstitution(substitution_probability=0.7,p=0.7,scispacy_entity_model="en_ner_bc5cdr_md")
+
+composite_transform=Compose(
+        [
+            SCI_SM_transform,
+            BIONLP13CG_transform,
+            BC5CDR_transform
+        ]
+)
+
 
 composite_transform=Compose(
         [
